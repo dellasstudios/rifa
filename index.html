@@ -3,31 +3,90 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#2f6fed">
-  <title>Rifa Online</title>
-  <meta name="description" content="Escolha seu número, reserve e pague via Pix.">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fed'/%3E%3Ctext x='32' y='43' font-size='30' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3E%23%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f3e2d7">
+  <title>Rifa Especial · D'ELLAS Studio</title>
+  <meta name="description" content="Rifa Especial D'ELLAS Studio: concorra a 3 prêmios de beleza e autocuidado. Escolha seu número e pague via Pix.">
+  <meta property="og:title" content="Rifa Especial · D'ELLAS Studio">
+  <meta property="og:description" content="Concorra a 3 prêmios incríveis e garanta um dia de beleza e autocuidado!">
+  <meta property="og:image" content="img/panfleto.webp">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23f3e2d7'/%3E%3Ctext x='32' y='44' font-size='34' font-family='Georgia,serif' fill='%236b3a2c' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-  <header class="topo">
+<body class="tema-dellas">
+  <header class="topo topo-marca">
     <div class="topo-conteudo">
-      <span class="marca"><span class="marca-icone" aria-hidden="true">#</span> Rifa Online</span>
+      <a href="./" class="logo" aria-label="D'ELLAS Studio">
+        <span class="logo-nome">D’ELLAS</span>
+        <span class="logo-studio">Studio</span>
+      </a>
+      <span class="lema">Beleza · Bem-estar · Você</span>
     </div>
   </header>
 
   <main class="container">
     <div id="aviso" class="aviso" role="alert" hidden></div>
 
-    <section class="cartao hero" aria-labelledby="titulo">
-      <h1 id="titulo">Carregando…</h1>
-      <p id="descricao" class="descricao"></p>
-      <div class="preco">
-        <span>Valor por número</span>
-        <strong id="valor">—</strong>
-      </div>
-      <p id="contato" class="ajuda" style="margin:12px 0 0" hidden></p>
+    <!-- Abertura no estilo do panfleto -->
+    <section class="abertura" aria-labelledby="titulo">
+      <p class="bilhete" aria-hidden="true">Mais que uma rifa…<br>é um convite<br>para se cuidar! ♡</p>
+      <h1 id="titulo" class="titulo-rifa">
+        <span class="titulo-rifa-grande">Rifa</span>
+        <span class="titulo-rifa-script">Especial</span>
+      </h1>
+      <p id="descricao" class="chamada">Concorra a 3 prêmios incríveis e garanta um dia de beleza e autocuidado!</p>
+      <span class="divisor" aria-hidden="true">♥</span>
     </section>
+
+    <!-- Prêmios -->
+    <section class="premios" aria-label="Prêmios">
+      <article class="premio">
+        <div class="premio-foto premio-foto-1" role="img" aria-label="Foto de olho com cílios fio a fio"></div>
+        <span class="premio-selo"><b>1º</b>prêmio</span>
+        <div class="premio-texto">
+          <h2 class="pincel">Cílios fio a fio</h2>
+          <p>Realce o seu olhar com mais charme e naturalidade.</p>
+        </div>
+      </article>
+      <article class="premio">
+        <div class="premio-foto premio-foto-2" role="img" aria-label="Foto de spa dos pés com flores"></div>
+        <span class="premio-selo"><b>2º</b>prêmio</span>
+        <div class="premio-texto">
+          <h2 class="pincel">Spa dos pés completo</h2>
+          <p>Um momento de cuidado, relaxamento e bem-estar para os seus pés.</p>
+        </div>
+      </article>
+      <article class="premio">
+        <div class="premio-foto premio-foto-3" role="img" aria-label="Foto de sobrancelha com design"></div>
+        <span class="premio-selo"><b>3º</b>prêmio</span>
+        <div class="premio-texto">
+          <h2 class="pincel">Design de sobrancelhas</h2>
+          <p>Sobrancelhas desenhadas para valorizar ainda mais o seu rosto.</p>
+        </div>
+      </article>
+    </section>
+
+    <!-- Valor, faixa de números e sorteio -->
+    <section class="oferta" aria-label="Valor e sorteio">
+      <div class="oferta-preco">
+        <span class="oferta-rotulo">Cada número por apenas</span>
+        <strong id="valor" class="oferta-valor">—</strong>
+      </div>
+      <div class="oferta-bilhete">
+        <svg viewBox="0 0 48 48" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M10 18 30 6l4 7a4 4 0 0 0 5 5l3 5-20 12-3-5a4 4 0 0 0-5-5z"/><path d="M19 22l8-5M21 26l6-3.5" stroke-linecap="round"/></g></svg>
+        <span>Números de<strong id="faixa">—</strong></span>
+      </div>
+    </section>
+    <div class="sorteio-linha">
+      <p id="sorteio" class="sorteio-pilula" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke-linecap="round"/></g></svg>
+        Sorteio: <strong id="dataSorteio"></strong>
+      </p>
+      <span class="boa-sorte" aria-hidden="true">Boa sorte!</span>
+    </div>
+    <p id="contato" class="contato" hidden></p>
 
     <section id="minhas" class="cartao" hidden aria-labelledby="minhasTitulo">
       <h2 id="minhasTitulo">Minhas reservas</h2>
@@ -35,9 +94,9 @@
       <ul id="listaMinhas" class="lista-minhas"></ul>
     </section>
 
-    <section class="cartao" aria-labelledby="gradeTitulo">
+    <section class="cartao" aria-labelledby="gradeTitulo" id="escolha">
       <div class="cabecalho-secao">
-        <h2 id="gradeTitulo">Escolha seu número</h2>
+        <h2 id="gradeTitulo" class="titulo-secao">Escolha seu número</h2>
         <span id="resumoGrade" class="ajuda"></span>
       </div>
       <ul class="legenda" id="legenda" aria-label="Legenda"></ul>
@@ -45,9 +104,31 @@
         <p class="carregando">Carregando números…</p>
       </div>
     </section>
+
+    <ul class="garantias" aria-label="Informações">
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M12 3 4.5 6v5.5c0 4.6 3.2 8.2 7.5 9.5 4.3-1.3 7.5-4.9 7.5-9.5V6z"/><path d="m8.8 12 2.2 2.2 4.4-4.4" stroke-linecap="round"/></g></svg>
+        <span>Sorteio transparente</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8.5"/><path d="M12 16.5s-4-2.4-4-5.1A2.2 2.2 0 0 1 12 10a2.2 2.2 0 0 1 4 1.4c0 2.7-4 5.1-4 5.1z" stroke-linejoin="round"/></g></svg>
+        <span>Pagamento via Pix com conferência da equipe</span>
+      </li>
+      <li>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M5 12.5 9.5 17 19 7.5"/></g></svg>
+        <span>Garanta já o seu número!</span>
+      </li>
+    </ul>
   </main>
 
-  <footer class="rodape">
+  <footer class="rodape rodape-marca">
+    <p class="rodape-frase">Você concorre e ainda nos ajuda a crescer! ♡</p>
+    <div class="logo logo-rodape" aria-hidden="true">
+      <span class="logo-nome">D’ELLAS</span>
+      <span class="logo-studio">Studio</span>
+    </div>
+    <p class="lema">Beleza · Bem-estar · Você</p>
+    <p class="rodape-frase rodape-frase-2">Cuidar de você também é a nossa especialidade!</p>
     <a href="admin.html" class="link-discreto">Painel gerencial</a>
   </footer>
 

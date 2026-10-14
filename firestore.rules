@@ -68,13 +68,14 @@ service cloud.firestore {
       return c.keys().hasOnly(['titulo', 'descricao', 'valor', 'numeroInicial', 'numeroFinal',
                                'reservaMinutos', 'pixChave', 'pixNome', 'pixCidade',
                                'pixCopiaECola', 'qrCodeUrl', 'permitirArquivo', 'contato',
-                               'atualizadoEm', 'atualizadoPor'])
+                               'dataSorteio', 'atualizadoEm', 'atualizadoPor'])
         && c.keys().hasAll(['titulo', 'valor', 'numeroInicial', 'numeroFinal', 'reservaMinutos'])
         && texto(c.titulo, 1, 120)
         && (c.valor is int || c.valor is float) && c.valor > 0 && c.valor <= 100000
         && c.numeroInicial is int && c.numeroInicial >= 0
         && c.numeroFinal is int && c.numeroFinal >= c.numeroInicial && c.numeroFinal <= 9999
         && c.reservaMinutos is int && c.reservaMinutos >= 1 && c.reservaMinutos <= 10080
+        && (!('dataSorteio' in c) || texto(c.dataSorteio, 0, 40))
         && c.atualizadoPor == request.auth.token.email
         && c.atualizadoEm == request.time;
     }

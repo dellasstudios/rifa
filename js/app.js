@@ -34,7 +34,6 @@ $("legenda").innerHTML = legendaHtml();
 
 if (!firebaseConfigurado) {
   mostrarAviso("O sistema ainda não foi conectado ao Firebase. Edite o arquivo js/firebase-config.js (veja o README).");
-  $("titulo").textContent = "Rifa Online";
   $("grade").innerHTML = "";
 } else {
   iniciar();
@@ -101,17 +100,25 @@ function mostrarAviso(texto) {
 // Renderização
 // ---------------------------------------------------------------------------
 
+const CHAMADA_PADRAO = "Concorra a 3 prêmios incríveis e garanta um dia de beleza e autocuidado!";
+
 function renderCabecalho() {
   const c = estado.config;
   if (!c) {
-    $("titulo").textContent = "Rifa Online";
     $("descricao").textContent = "A rifa ainda não foi configurada pela organização.";
     $("valor").textContent = "—";
+    $("faixa").textContent = "—";
+    $("sorteio").hidden = true;
     return;
   }
-  $("titulo").textContent = c.titulo || "Rifa Online";
-  $("descricao").textContent = c.descricao || "";
-  $("valor").textContent = formatarMoeda(c.valor);
+  $("descricao").textContent = c.descricao || CHAMADA_PADRAO;
+  // "R$ 7,00" no estilo do panfleto: centavos menores e elevados.
+  const [inteiro, centavos] = Number(c.valor || 0).toFixed(2).split(".");
+  $("valor").innerHTML = `<span class="moeda">R$</span>${Number(inteiro).toLocaleString("pt-BR")}<sup>,${centavos}</sup>`;
+  $("valor").setAttribute("aria-label", formatarMoeda(c.valor));
+  $("faixa").textContent = `${formatarNumero(c.numeroInicial)} a ${formatarNumero(c.numeroFinal)}`;
+  $("sorteio").hidden = !c.dataSorteio;
+  $("dataSorteio").textContent = c.dataSorteio || "";
   const contato = $("contato");
   contato.hidden = !c.contato;
   if (c.contato) {
@@ -120,7 +127,7 @@ function renderCabecalho() {
       ? `<a href="${wa}" target="_blank" rel="noopener">${escapeHtml(c.contato)}</a>`
       : escapeHtml(c.contato)}`;
   }
-  document.title = c.titulo ? `${c.titulo} · Rifa Online` : "Rifa Online";
+  document.title = c.titulo ? `${c.titulo} · D'ELLAS Studio` : "Rifa Especial · D'ELLAS Studio";
 }
 
 function minhaReservaDoNumero(n) {

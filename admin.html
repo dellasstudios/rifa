@@ -4,18 +4,20 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <meta name="theme-color" content="#2f6fed">
-  <title>Painel gerencial · Rifa Online</title>
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fed'/%3E%3Ctext x='32' y='43' font-size='30' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3E%23%3C/text%3E%3C/svg%3E">
+  <meta name="theme-color" content="#f3e2d7">
+  <title>Painel gerencial · D'ELLAS Studio</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='32' fill='%23f3e2d7'/%3E%3Ctext x='32' y='44' font-size='34' font-family='Georgia,serif' fill='%236b3a2c' text-anchor='middle'%3ED%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Great+Vibes&family=Montserrat:wght@400;500;600;700&display=swap">
   <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="tema-dellas">
   <header class="topo">
-    <div class="topo-conteudo" style="max-width:1280px">
-      <a href="index.html" class="marca" style="color:inherit;text-decoration:none">
-        <span class="marca-icone" aria-hidden="true">#</span> Rifa Online
-        <span class="ajuda subtitulo" style="font-weight:500">· Painel gerencial</span>
+    <div class="topo-conteudo topo-painel" style="max-width:1280px">
+      <a href="index.html" class="logo logo-painel" aria-label="D'ELLAS Studio — voltar para a rifa">
+        <span class="logo-nome">D’ELLAS</span>
+        <span class="logo-studio">Studio</span>
       </a>
+      <span class="ajuda subtitulo">Painel gerencial da rifa</span>
       <div id="usuarioTopo" class="usuario-topo" hidden>
         <span id="usuarioEmail"></span>
         <button type="button" id="btnSair" class="botao botao-secundario botao-pequeno">Sair</button>
@@ -114,6 +116,8 @@
           <label class="campo"><span>Último número</span><input id="cFinal" type="number" min="0" max="9999" required></label>
           <label class="campo"><span>Chave Pix</span><input id="cPixChave" type="text" maxlength="77" placeholder="E-mail, CPF/CNPJ, +55DDDNÚMERO ou chave aleatória"></label>
           <label class="campo"><span>WhatsApp/contato da organização <em>(opcional)</em></span><input id="cContato" type="text" maxlength="60"></label>
+          <label class="campo"><span>Data do sorteio <em>(opcional — ex.: 30/11/26; vazio esconde)</em></span><input id="cDataSorteio" type="text" maxlength="40" placeholder="30/11/26"></label>
+          <span class="campo" aria-hidden="true"></span>
           <label class="campo"><span>Nome do recebedor <em>(para gerar o QR Code)</em></span><input id="cPixNome" type="text" maxlength="25"></label>
           <label class="campo"><span>Cidade do recebedor <em>(para gerar o QR Code)</em></span><input id="cPixCidade" type="text" maxlength="15"></label>
           <label class="campo largo"><span>Pix Copia e Cola fixo <em>(opcional — substitui o código gerado automaticamente)</em></span><textarea id="cPixCodigo" rows="2" maxlength="512"></textarea></label>

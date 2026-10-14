@@ -557,6 +557,7 @@ function preencherConfig() {
   $("cPixCodigo").value = c.pixCopiaECola || "";
   $("cQrUrl").value = c.qrCodeUrl || "";
   $("cContato").value = c.contato || "";
+  $("cDataSorteio").value = c.dataSorteio || "";
   $("cArquivo").checked = Boolean(c.permitirArquivo);
   configCarregada = true;
 }
@@ -599,6 +600,7 @@ $("formConfig").addEventListener("submit", async (e) => {
       pixCopiaECola: $("cPixCodigo").value.trim(),
       qrCodeUrl: $("cQrUrl").value.trim(),
       contato: $("cContato").value.trim(),
+      dataSorteio: $("cDataSorteio").value.trim(),
       permitirArquivo: $("cArquivo").checked,
       atualizadoEm: serverTimestamp(),
       atualizadoPor: estado.usuario.email

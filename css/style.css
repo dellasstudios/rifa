@@ -1,22 +1,31 @@
 /* Rifa Online — estilos compartilhados (página pública e painel gerencial) */
 
+/* Identidade visual D'ELLAS Studio: nude, rosé e marrom chocolate. */
 :root {
-  --fundo: #f4f6fb;
-  --superficie: #ffffff;
-  --texto: #1f2937;
-  --texto-suave: #6b7280;
-  --borda: #e3e7ef;
-  --primaria: #2f6fed;
-  --primaria-escura: #1f55c4;
-  --perigo: #c62828;
-  --raio: 14px;
-  --sombra: 0 1px 2px rgba(16, 24, 40, .05), 0 4px 16px rgba(16, 24, 40, .06);
+  --fundo: #f6e9e0;
+  --superficie: #fffaf6;
+  --texto: #4a2a20;
+  --texto-suave: #8b6a5d;
+  --borda: #ecd8cb;
+  --primaria: #9a5a4c;
+  --primaria-escura: #7a4237;
+  --rose: #b98276;
+  --rose-claro: #f1dbd1;
+  --chocolate: #5e3326;
+  --perigo: #b3261e;
+  --raio: 18px;
+  --sombra: 0 1px 2px rgba(94, 51, 38, .06), 0 8px 24px rgba(94, 51, 38, .08);
 
-  /* Estados dos números */
-  --disp-fundo: #e7f8ee; --disp-borda: #34c46e; --disp-texto: #116b37;
-  --agu-fundo: #fff3dc; --agu-borda: #f5a524; --agu-texto: #8a4b00;
-  --ana-fundo: #e5efff; --ana-borda: #3b7bf0; --ana-texto: #1745a3;
-  --pago-fundo: #e6e8ec; --pago-borda: #9aa3b2; --pago-texto: #3f4756;
+  --fonte-texto: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --fonte-titulo: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --fonte-destaque: "Playfair Display", Georgia, serif;
+  --fonte-script: "Great Vibes", "Brush Script MT", cursive;
+
+  /* Estados dos números (cores pedidas no escopo, em tons suaves) */
+  --disp-fundo: #eef6ea; --disp-borda: #7cb58a; --disp-texto: #2d6a3e;
+  --agu-fundo: #fcefdb; --agu-borda: #e3a24f; --agu-texto: #8a5513;
+  --ana-fundo: #e8eefb; --ana-borda: #7f9ad8; --ana-texto: #2f4f91;
+  --pago-fundo: #ece4df; --pago-borda: #b3a197; --pago-texto: #5d4a40;
 }
 
 * { box-sizing: border-box; }
@@ -27,7 +36,7 @@ body {
   margin: 0;
   background: var(--fundo);
   color: var(--texto);
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--fonte-texto);
   font-size: 16px;
   line-height: 1.5;
   min-height: 100vh;
@@ -475,3 +484,281 @@ details.cartao > summary { cursor: pointer; font-weight: 700; font-size: 1.1rem;
 details.cartao > summary::-webkit-details-marker { display: none; }
 details.cartao > summary::after { content: "▾"; float: right; color: var(--texto-suave); }
 details.cartao[open] > summary { margin-bottom: 14px; }
+
+/* =========================================================================
+   Tema D'ELLAS Studio (visual do panfleto)
+   ========================================================================= */
+
+.tema-dellas {
+  background:
+    radial-gradient(1200px 600px at 85% -10%, #fbf1ea 0%, transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, #f3dfd4 0%, transparent 60%),
+    var(--fundo);
+  background-attachment: fixed;
+}
+
+/* Componentes gerais na paleta */
+.tema-dellas .aviso-info { background: #fbf1ec; border-color: #e8cfc4; color: #6b3a2c; }
+.tema-dellas .botao { border-radius: 999px; letter-spacing: .01em; }
+.tema-dellas .botao-secundario { background: var(--superficie); color: var(--primaria); border-color: #e2c4b8; }
+.tema-dellas .botao-secundario:hover:not(:disabled) { background: #fbf0ea; }
+.tema-dellas .botao-perigo { border-color: #ecc0bb; }
+.tema-dellas input, .tema-dellas textarea, .tema-dellas select { border-color: #e2cdc1; background: #fffdfb; }
+.tema-dellas input:focus, .tema-dellas textarea:focus, .tema-dellas select:focus { outline-color: var(--rose); border-color: var(--rose); }
+.tema-dellas input[readonly], .tema-dellas .resumo div, .tema-dellas .linha-copiar code { background: #fbf2ec; }
+.tema-dellas .linha-copiar code { border-color: #e2cdc1; }
+.tema-dellas .fechar { background: #f6e8e0; color: var(--chocolate); }
+.tema-dellas .fechar:hover { background: #efd9cd; }
+.tema-dellas .toast { background: var(--chocolate); }
+.tema-dellas .toast-sucesso { background: #2d6a3e; }
+.tema-dellas .dialogo { background: var(--superficie); }
+.tema-dellas .dialogo h2, .tema-dellas .cartao h2 { font-family: var(--fonte-titulo); font-weight: 600; font-size: 1.5rem; color: var(--chocolate); }
+.tema-dellas .dialogo h3, .tema-dellas .cartao h3 { font-family: var(--fonte-titulo); font-weight: 600; font-size: 1.25rem; color: var(--chocolate); }
+.tema-dellas details.cartao > summary { font-family: var(--fonte-titulo); font-size: 1.4rem; font-weight: 600; color: var(--chocolate); }
+.tema-dellas .link-discreto { color: var(--texto-suave); }
+.tema-dellas .selo-pago { background: #e5f2e3; border-color: #7cb58a; color: #2d6a3e; }
+.tema-dellas a { color: var(--primaria); }
+
+/* Logo */
+.logo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+  color: var(--chocolate);
+  text-decoration: none;
+}
+.tema-dellas a.logo { color: var(--chocolate); }
+.logo-nome { font-family: var(--fonte-titulo); font-weight: 500; font-size: 1.9rem; letter-spacing: .06em; }
+.logo-studio {
+  font-family: var(--fonte-texto);
+  font-size: .62rem;
+  letter-spacing: .5em;
+  text-transform: uppercase;
+  margin-top: 4px;
+  padding: 4px .2em 0 .7em;
+  border-top: 1px solid currentColor;
+}
+.lema { font-size: .66rem; letter-spacing: .32em; text-transform: uppercase; color: var(--texto-suave); }
+
+.tema-dellas .topo { background: rgba(255, 250, 246, .75); border-bottom-color: var(--borda); }
+.topo-marca .topo-conteudo { justify-content: center; flex-direction: column; gap: 6px; padding: 14px 16px 12px; }
+.topo-painel { justify-content: flex-start; }
+.topo-painel .logo-nome { font-size: 1.5rem; }
+.topo-painel .logo-studio { font-size: .55rem; }
+.topo-painel .subtitulo { margin-right: auto; letter-spacing: .08em; }
+
+/* Abertura */
+.abertura { position: relative; text-align: center; padding: 18px 8px 4px; }
+.titulo-rifa { margin: 0; line-height: .9; display: inline-block; }
+.titulo-rifa-grande {
+  display: block;
+  font-family: var(--fonte-destaque);
+  font-weight: 700;
+  font-size: clamp(4.2rem, 17vw, 8.5rem);
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  background: linear-gradient(180deg, #8a4f3e 0%, #5e3326 55%, #7d4636 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.titulo-rifa-script {
+  display: block;
+  font-family: var(--fonte-script);
+  font-weight: 400;
+  font-size: clamp(3rem, 12vw, 5.6rem);
+  color: var(--primaria);
+  margin-top: -.42em;
+  margin-left: 1.4em;
+  text-shadow: 0 2px 0 rgba(255, 250, 246, .9);
+}
+.chamada {
+  max-width: 34em;
+  margin: 14px auto 6px;
+  font-size: .9rem;
+  font-weight: 600;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--chocolate);
+  white-space: pre-line;
+}
+.divisor { display: flex; align-items: center; gap: 10px; color: var(--chocolate); font-size: .8rem; max-width: 520px; margin: 0 auto; }
+.divisor::before, .divisor::after { content: ""; flex: 1; height: 1px; background: #c9a99b; }
+.bilhete {
+  position: absolute;
+  right: 0;
+  top: 8px;
+  margin: 0;
+  font-family: var(--fonte-script);
+  font-size: 1.45rem;
+  line-height: 1.1;
+  color: var(--chocolate);
+  transform: rotate(-8deg);
+  text-align: left;
+}
+@media (max-width: 900px) { .bilhete { display: none; } }
+
+/* Prêmios: fotos recortadas do próprio panfleto (img/panfleto.webp, 859x1280). */
+.premios { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 8px; }
+.premio {
+  position: relative;
+  background: rgba(255, 250, 246, .85);
+  border: 1px solid #ecd3c6;
+  border-radius: 20px;
+  box-shadow: var(--sombra);
+  padding: 8px 8px 16px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+.premio-foto {
+  aspect-ratio: 246 / 204;
+  border-radius: 14px;
+  background-image: url("../img/panfleto.webp");
+  background-size: 349.2% auto;
+  background-repeat: no-repeat;
+  background-color: var(--rose-claro);
+}
+.premio-foto-1 { background-position: 6.85% 42.94%; }
+.premio-foto-2 { background-position: 50.41% 42.94%; }
+.premio-foto-3 { background-position: 93.47% 42.94%; }
+.premio-selo {
+  position: absolute;
+  /* Grande o bastante para cobrir o selo que já existe na foto do panfleto. */
+  top: -12px;
+  left: -6px;
+  width: clamp(70px, 46%, 118px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #c79a8e, #9a5a4c 70%);
+  border: 3px solid #fffaf6;
+  box-shadow: 0 4px 12px rgba(94, 51, 38, .25);
+  color: #fffaf6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: .62rem;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.premio-selo b { font-family: var(--fonte-destaque); font-size: 2.1rem; letter-spacing: 0; line-height: 1; }
+.premio-texto { text-align: center; display: flex; flex-direction: column; align-items: center; }
+.tema-dellas .pincel {
+  margin: -22px 6px 10px;
+  padding: 8px 18px 10px;
+  font-family: var(--fonte-script);
+  font-weight: 400;
+  font-size: 1.75rem;
+  line-height: 1.05;
+  color: #fffaf6;
+  background: linear-gradient(100deg, rgba(154, 90, 76, .94), #b47c70 55%, rgba(154, 90, 76, .92));
+  border-radius: 40px 12px 36px 10px / 18px 30px 14px 28px;
+  transform: rotate(-2deg);
+  box-shadow: 0 6px 14px rgba(94, 51, 38, .18);
+}
+.premio-texto p { margin: 0 8px; font-size: .88rem; color: var(--texto); }
+
+@media (max-width: 680px) {
+  .premios { grid-template-columns: 1fr; gap: 14px; }
+  .premio { flex-direction: row; align-items: center; gap: 12px; padding: 8px; }
+  .premio-foto { width: 42%; flex: none; }
+  .premio-selo { width: clamp(60px, 22%, 82px); top: -8px; left: -6px; font-size: .52rem; }
+  .premio-selo b { font-size: 1.35rem; }
+  .tema-dellas .pincel { margin: 0 0 8px; font-size: 1.45rem; padding: 6px 14px 8px; }
+  .premio-texto p { font-size: .82rem; margin: 0; }
+}
+
+/* Valor e faixa de números */
+.oferta { display: flex; flex-wrap: wrap; align-items: stretch; justify-content: center; gap: 14px; margin-top: 10px; }
+.oferta-preco {
+  flex: 1 1 320px;
+  max-width: 520px;
+  background: linear-gradient(100deg, #9a5a4c, #b47c70 60%, #a0645a);
+  border-radius: 46px 14px 40px 12px / 22px 34px 18px 30px;
+  color: #fffaf6;
+  padding: 14px 24px 12px;
+  text-align: center;
+  box-shadow: var(--sombra);
+}
+.oferta-rotulo { display: block; font-size: .78rem; letter-spacing: .22em; text-transform: uppercase; font-weight: 500; }
+.oferta-valor { display: block; font-family: var(--fonte-destaque); font-size: clamp(3rem, 12vw, 4.4rem); line-height: 1.05; }
+.oferta-valor .moeda { font-size: .55em; margin-right: .08em; }
+.oferta-valor sup { font-size: .45em; vertical-align: .9em; margin-left: .04em; }
+.oferta-bilhete {
+  flex: 0 1 300px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 26px;
+  border: 1.5px solid var(--chocolate);
+  border-radius: 12px;
+  color: var(--chocolate);
+  background: rgba(255, 250, 246, .6);
+}
+.oferta-bilhete svg { width: 46px; height: 46px; flex: none; }
+.oferta-bilhete span { font-size: .85rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; }
+.oferta-bilhete strong { display: block; font-family: var(--fonte-destaque); font-size: 2rem; letter-spacing: .02em; line-height: 1.1; white-space: nowrap; }
+
+.sorteio-linha { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 6px 22px; }
+.sorteio-pilula {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 24px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f1d9ce, #e7c6b8);
+  border: 1px solid #d9b1a2;
+  color: var(--chocolate);
+  font-size: .95rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+.sorteio-pilula strong { font-family: var(--fonte-destaque); letter-spacing: .04em; font-size: 1.15rem; }
+.sorteio-pilula svg { width: 20px; height: 20px; }
+.boa-sorte { font-family: var(--fonte-script); font-size: 2.1rem; color: var(--chocolate); transform: rotate(-6deg); }
+
+.contato { text-align: center; margin: 0; font-size: .9rem; color: var(--texto-suave); }
+.contato a { white-space: nowrap; font-weight: 600; }
+
+/* Garantias */
+.garantias { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.garantias li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--chocolate);
+}
+.garantias li + li { border-left: 1px solid #d8b9ab; }
+.garantias svg { width: 34px; height: 34px; flex: none; padding: 6px; border: 1.5px solid var(--chocolate); border-radius: 50%; }
+@media (max-width: 640px) {
+  .garantias { grid-template-columns: 1fr; }
+  .garantias li + li { border-left: none; border-top: 1px solid #e3c9bd; }
+}
+
+/* Rodapé */
+.rodape-marca { display: grid; justify-items: center; gap: 8px; padding-top: 28px; }
+.rodape-marca .lema { margin: 0; }
+.rodape-marca .logo-nome { font-size: 2.2rem; }
+.rodape-frase { margin: 0; font-family: var(--fonte-script); font-size: 1.6rem; color: var(--chocolate); text-align: center; }
+.rodape-frase-2 {
+  background: rgba(185, 130, 118, .25);
+  padding: 2px 18px 6px;
+  border-radius: 30px 10px 28px 8px / 14px 24px 12px 22px;
+  font-size: 1.4rem;
+}
+
+@media (max-width: 480px) {
+  .chamada { font-size: .78rem; letter-spacing: .1em; }
+  .oferta-bilhete strong { font-size: 1.7rem; }
+  .boa-sorte { font-size: 1.8rem; }
+  .logo-nome { font-size: 1.7rem; }
+}
