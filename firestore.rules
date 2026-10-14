@@ -1,0 +1,230 @@
+rules_version = '2';
+
+// =============================================================================
+// Rifa Online — regras de segurança do Cloud Firestore
+//
+// Coleções:
+//   config/rifa        -> configuração pública da rifa (leitura pública, escrita admin)
+//   numeros/{n}        -> estado público de cada número (sem dados pessoais)
+//                         documento inexistente = número disponível
+//   reservas/{id}      -> dados pessoais da reserva (dono ou admin)
+//   historico/{id}     -> trilha de auditoria das ações administrativas (admin)
+//   admins/{uid}       -> lista de administradores (gerenciada só pelo console)
+//
+// Toda validação importante está aqui: o front-end é apenas conveniência.
+// =============================================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- Funções auxiliares ----------
+
+    function logado() {
+      return request.auth != null;
+    }
+
+    function ehAdmin() {
+      return logado()
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function cfg() {
+      return get(/databases/$(database)/documents/config/rifa).data;
+    }
+
+    function caminhoReserva(id) {
+      return /databases/$(database)/documents/reservas/$(id);
+    }
+
+    function caminhoNumero(n) {
+      return /databases/$(database)/documents/numeros/$(n);
+    }
+
+    function caminhoHistorico(id) {
+      return /databases/$(database)/documents/historico/$(id);
+    }
+
+    function texto(v, min, max) {
+      return v is string && v.size() >= min && v.size() <= max;
+    }
+
+    // ID do documento do número: inteiro sem zeros à esquerda, dentro da faixa configurada.
+    function idNumeroValido(n) {
+      return n.matches('^(0|[1-9][0-9]{0,3})$')
+        && int(n) >= cfg().numeroInicial
+        && int(n) <= cfg().numeroFinal;
+    }
+
+    // Reserva aguardando pagamento cujo prazo já venceu (relógio do servidor).
+    function expirado(d) {
+      return d.status == 'aguardando'
+        && request.time > d.reservadoEm + duration.value(cfg().reservaMinutos, 'm');
+    }
+
+    // ---------- Configuração ----------
+
+    function configValida(c) {
+      return c.keys().hasOnly(['titulo', 'descricao', 'valor', 'numeroInicial', 'numeroFinal',
+                               'reservaMinutos', 'pixChave', 'pixNome', 'pixCidade',
+                               'pixCopiaECola', 'qrCodeUrl', 'permitirArquivo', 'contato',
+                               'atualizadoEm', 'atualizadoPor'])
+        && c.keys().hasAll(['titulo', 'valor', 'numeroInicial', 'numeroFinal', 'reservaMinutos'])
+        && texto(c.titulo, 1, 120)
+        && (c.valor is int || c.valor is float) && c.valor > 0 && c.valor <= 100000
+        && c.numeroInicial is int && c.numeroInicial >= 0
+        && c.numeroFinal is int && c.numeroFinal >= c.numeroInicial && c.numeroFinal <= 9999
+        && c.reservaMinutos is int && c.reservaMinutos >= 1 && c.reservaMinutos <= 10080
+        && c.atualizadoPor == request.auth.token.email
+        && c.atualizadoEm == request.time;
+    }
+
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if ehAdmin() && docId == 'rifa' && configValida(request.resource.data);
+    }
+
+    // ---------- Administradores ----------
+
+    match /admins/{uid} {
+      allow read: if logado() && request.auth.uid == uid;
+      allow write: if false; // cadastre administradores pelo console do Firebase
+    }
+
+    // ---------- Números (estado público) ----------
+
+    // Novo vínculo número -> reserva. Só é aceito junto com a criação da reserva
+    // na MESMA escrita (transação), pelo mesmo usuário.
+    function novaReservaNumero(n) {
+      let d = request.resource.data;
+      let r = getAfter(caminhoReserva(d.reservaId)).data;
+      return idNumeroValido(n)
+        && d.keys().hasOnly(['status', 'reservaId', 'reservadoEm'])
+        && d.keys().hasAll(['status', 'reservaId', 'reservadoEm'])
+        && d.status == 'aguardando'
+        && d.reservaId is string
+        && d.reservadoEm == request.time
+        && r.uid == request.auth.uid
+        && r.numero == int(n)
+        && r.criadaEm == request.time;
+    }
+
+    // Participante informou o comprovante: aguardando -> analise.
+    function envioComprovanteNumero() {
+      let d = request.resource.data;
+      let r = getAfter(caminhoReserva(resource.data.reservaId)).data;
+      return resource.data.status == 'aguardando'
+        && d.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && d.status == 'analise'
+        && r.uid == request.auth.uid
+        && r.status == 'analise'
+        && r.comprovanteEnviadoEm == request.time;
+    }
+
+    // Admin alterou o status. Exige que a reserva vinculada seja atualizada
+    // (com carimbo do admin) na mesma escrita.
+    function atualizacaoAdminNumero() {
+      let d = request.resource.data;
+      let r = getAfter(caminhoReserva(resource.data.reservaId)).data;
+      return d.keys().hasOnly(['status', 'reservaId', 'reservadoEm'])
+        && d.reservaId == resource.data.reservaId
+        && d.status in ['aguardando', 'analise', 'pago']
+        && d.reservadoEm is timestamp
+        && r.atualizadoEm == request.time
+        && r.atualizadoPor == request.auth.token.email;
+    }
+
+    match /numeros/{n} {
+      allow read: if true;
+
+      // create só acontece se o documento NÃO existe: é isso que torna a reserva
+      // exclusiva. Duas tentativas simultâneas -> só uma é gravada.
+      allow create: if logado() && novaReservaNumero(n);
+
+      allow update: if (logado() && expirado(resource.data) && novaReservaNumero(n))
+                    || (logado() && envioComprovanteNumero())
+                    || (ehAdmin() && atualizacaoAdminNumero());
+
+      // Liberação: somente admin, e somente com a reserva cancelada/expirada na mesma escrita.
+      allow delete: if ehAdmin()
+        && getAfter(caminhoReserva(resource.data.reservaId)).data.status in ['cancelada', 'expirada']
+        && getAfter(caminhoReserva(resource.data.reservaId)).data.atualizadoEm == request.time;
+    }
+
+    // ---------- Reservas (dados pessoais) ----------
+
+    function novaReserva(id) {
+      let d = request.resource.data;
+      let num = getAfter(caminhoNumero(string(d.numero))).data;
+      return d.keys().hasOnly(['numero', 'nome', 'telefone', 'uid', 'valor', 'status', 'criadaEm'])
+        && d.keys().hasAll(['numero', 'nome', 'telefone', 'uid', 'valor', 'status', 'criadaEm'])
+        && d.uid == request.auth.uid
+        && d.numero is int
+        && texto(d.nome, 3, 120)
+        && texto(d.telefone, 8, 30)
+        && d.valor == cfg().valor
+        && d.status == 'aguardando'
+        && d.criadaEm == request.time
+        && num.reservaId == id
+        && num.reservadoEm == request.time;
+    }
+
+    function envioComprovante(id) {
+      let d = request.resource.data;
+      let num = getAfter(caminhoNumero(string(resource.data.numero))).data;
+      return resource.data.uid == request.auth.uid
+        && resource.data.status in ['aguardando', 'invalido']
+        && d.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'comprovanteId', 'referencia', 'arquivo', 'comprovanteEnviadoEm'])
+        && d.status == 'analise'
+        && texto(d.comprovanteId, 3, 200)
+        && texto(d.referencia, 0, 200)
+        && (d.arquivo == ''
+            || (texto(d.arquivo, 1, 400)
+                && d.arquivo.matches('comprovantes/' + request.auth.uid + '/' + id + '/.+')))
+        && d.comprovanteEnviadoEm == request.time
+        && num.reservaId == id
+        && num.status == 'analise';
+    }
+
+    // Admin: só pode mudar status/observação, sempre com carimbo e registro no histórico.
+    function atualizacaoAdminReserva(id) {
+      let d = request.resource.data;
+      let h = getAfter(caminhoHistorico(d.ultimoHistorico)).data;
+      return d.diff(resource.data).affectedKeys()
+             .hasOnly(['status', 'observacao', 'atualizadoEm', 'atualizadoPor', 'ultimoHistorico'])
+        && d.status in ['aguardando', 'analise', 'pago', 'invalido', 'cancelada', 'expirada']
+        && texto(d.observacao, 0, 500)
+        && d.atualizadoPor == request.auth.token.email
+        && d.atualizadoEm == request.time
+        && h.reservaId == id
+        && h.statusNovo == d.status
+        && h.por == request.auth.token.email
+        && h.em == request.time;
+    }
+
+    match /reservas/{id} {
+      allow read: if ehAdmin() || (logado() && resource.data.uid == request.auth.uid);
+      allow create: if logado() && novaReserva(id);
+      allow update: if (logado() && envioComprovante(id))
+                    || (ehAdmin() && atualizacaoAdminReserva(id));
+      allow delete: if false;
+    }
+
+    // ---------- Histórico (auditoria, somente inclusão) ----------
+
+    match /historico/{id} {
+      allow read: if ehAdmin();
+      allow create: if ehAdmin()
+        && request.resource.data.keys().hasOnly(['reservaId', 'numero', 'acao', 'statusAnterior',
+                                                 'statusNovo', 'por', 'porUid', 'em', 'observacao'])
+        && request.resource.data.reservaId is string
+        && request.resource.data.acao is string
+        && request.resource.data.por == request.auth.token.email
+        && request.resource.data.porUid == request.auth.uid
+        && request.resource.data.em == request.time
+        && texto(request.resource.data.observacao, 0, 500);
+      allow update, delete: if false;
+    }
+  }
+}

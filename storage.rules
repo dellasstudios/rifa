@@ -1,0 +1,31 @@
+rules_version = '2';
+
+// Rifa Online — regras do Cloud Storage (opcional: só usado se o envio de
+// arquivo do comprovante estiver habilitado na configuração da rifa).
+//
+// Caminho: comprovantes/{uid do participante}/{id da reserva}/{arquivo}
+//  - o participante só pode ENVIAR (nunca ler, sobrescrever ou apagar);
+//  - somente administradores podem ler.
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function ehAdmin() {
+      return request.auth != null
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+
+    match /comprovantes/{uid}/{reservaId}/{arquivo} {
+      allow read: if ehAdmin();
+
+      allow create: if request.auth != null
+        && request.auth.uid == uid
+        && request.resource.size < 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/.*|application/pdf')
+        && firestore.get(/databases/(default)/documents/reservas/$(reservaId)).data.uid == uid;
+
+      allow update, delete: if false;
+    }
+  }
+}

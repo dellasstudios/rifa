@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#2f6fed">
+  <title>Painel gerencial · Rifa Online</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fed'/%3E%3Ctext x='32' y='43' font-size='30' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3E%23%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="topo-conteudo" style="max-width:1280px">
+      <a href="index.html" class="marca" style="color:inherit;text-decoration:none">
+        <span class="marca-icone" aria-hidden="true">#</span> Rifa Online
+        <span class="ajuda subtitulo" style="font-weight:500">· Painel gerencial</span>
+      </a>
+      <div id="usuarioTopo" class="usuario-topo" hidden>
+        <span id="usuarioEmail"></span>
+        <button type="button" id="btnSair" class="botao botao-secundario botao-pequeno">Sair</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="container container-largo">
+    <div id="aviso" class="aviso" role="alert" hidden></div>
+
+    <!-- Login -->
+    <section id="telaLogin" class="cartao login" hidden aria-labelledby="loginTitulo">
+      <h1 id="loginTitulo" style="font-size:1.4rem">Acesso da equipe</h1>
+      <p class="ajuda">Entre com o e-mail e a senha de administrador.</p>
+      <form id="formLogin" novalidate>
+        <label class="campo">
+          <span>E-mail</span>
+          <input id="loginEmail" type="email" autocomplete="username" required>
+        </label>
+        <label class="campo">
+          <span>Senha</span>
+          <input id="loginSenha" type="password" autocomplete="current-password" required>
+        </label>
+        <p id="loginErro" class="erro" role="alert" hidden></p>
+        <button id="btnEntrar" type="submit" class="botao botao-primario botao-grande">Entrar</button>
+      </form>
+      <p style="margin:14px 0 0;text-align:center">
+        <button type="button" id="btnEsqueci" class="link-discreto" style="border:none;background:none;cursor:pointer;font:inherit;font-size:.85rem">Esqueci minha senha</button>
+      </p>
+    </section>
+
+    <!-- Sem permissão -->
+    <section id="telaSemPermissao" class="cartao login" hidden>
+      <h1 style="font-size:1.3rem">Acesso não autorizado</h1>
+      <p>Este usuário não tem permissão de administrador. Peça a um responsável para incluir o seu acesso.</p>
+      <p class="ajuda">UID do usuário: <code id="semPermissaoUid"></code></p>
+      <button type="button" id="btnSairSemPermissao" class="botao botao-secundario botao-grande">Sair</button>
+    </section>
+
+    <!-- Painel -->
+    <div id="painel" hidden style="display:grid;gap:16px">
+      <section class="indicadores" aria-label="Indicadores">
+        <div class="indicador"><span>Total de números</span><strong id="indTotal">—</strong></div>
+        <div class="indicador ind-disp"><span>Disponíveis</span><strong id="indDisp">—</strong></div>
+        <div class="indicador ind-agu"><span>Aguardando pagamento</span><strong id="indAgu">—</strong></div>
+        <div class="indicador ind-ana"><span>Pagamentos em análise</span><strong id="indAna">—</strong></div>
+        <div class="indicador ind-pago"><span>Pagamentos confirmados</span><strong id="indPago">—</strong></div>
+        <div class="indicador ind-valor"><span>Valor total confirmado</span><strong id="indValor">—</strong></div>
+      </section>
+
+      <section class="cartao" aria-labelledby="reservasTitulo">
+        <div class="barra-acoes">
+          <h2 id="reservasTitulo" style="margin:0">Reservas</h2>
+          <button type="button" id="btnLiberarExpiradas" class="botao botao-secundario botao-pequeno" hidden></button>
+        </div>
+        <div class="filtros">
+          <label class="campo"><span>Número</span><input id="fNumero" type="text" inputmode="numeric" placeholder="Ex.: 7"></label>
+          <label class="campo"><span>Nome</span><input id="fNome" type="search" placeholder="Buscar nome"></label>
+          <label class="campo"><span>Telefone</span><input id="fTelefone" type="search" inputmode="tel" placeholder="Buscar telefone"></label>
+          <label class="campo"><span>Status</span>
+            <select id="fStatus">
+              <option value="ativas">Ativas</option>
+              <option value="todas">Todas</option>
+              <option value="aguardando">Aguardando pagamento</option>
+              <option value="analise">Pagamento em análise</option>
+              <option value="pago">Pago / confirmado</option>
+              <option value="invalido">Pagamento não identificado</option>
+              <option value="cancelada">Cancelada</option>
+              <option value="expirada">Expirada / liberada</option>
+            </select>
+          </label>
+        </div>
+        <div class="tabela-wrap">
+          <table class="tabela">
+            <thead>
+              <tr>
+                <th>Nº</th><th>Nome completo</th><th>Telefone/WhatsApp</th><th>Reserva</th>
+                <th>Valor</th><th>Comprovante</th><th>Status</th><th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaCorpo"></tbody>
+          </table>
+        </div>
+        <p id="tabelaVazia" class="carregando" hidden>Nenhuma reserva encontrada.</p>
+        <p id="tabelaContagem" class="ajuda" style="margin:8px 0 0"></p>
+      </section>
+
+      <details id="secConfig" class="cartao">
+        <summary>Configuração da rifa</summary>
+        <form id="formConfig" class="config-form" novalidate>
+          <label class="campo largo"><span>Título da rifa</span><input id="cTitulo" type="text" maxlength="120" required></label>
+          <label class="campo largo"><span>Descrição</span><textarea id="cDescricao" rows="3" maxlength="2000"></textarea></label>
+          <label class="campo"><span>Valor de cada número (R$)</span><input id="cValor" type="text" inputmode="decimal" required placeholder="10,00"></label>
+          <label class="campo"><span>Prazo da reserva (minutos)</span><input id="cMinutos" type="number" min="1" max="10080" required></label>
+          <label class="campo"><span>Primeiro número</span><input id="cInicial" type="number" min="0" max="9999" required></label>
+          <label class="campo"><span>Último número</span><input id="cFinal" type="number" min="0" max="9999" required></label>
+          <label class="campo"><span>Chave Pix</span><input id="cPixChave" type="text" maxlength="77" placeholder="E-mail, CPF/CNPJ, +55DDDNÚMERO ou chave aleatória"></label>
+          <label class="campo"><span>WhatsApp/contato da organização <em>(opcional)</em></span><input id="cContato" type="text" maxlength="60"></label>
+          <label class="campo"><span>Nome do recebedor <em>(para gerar o QR Code)</em></span><input id="cPixNome" type="text" maxlength="25"></label>
+          <label class="campo"><span>Cidade do recebedor <em>(para gerar o QR Code)</em></span><input id="cPixCidade" type="text" maxlength="15"></label>
+          <label class="campo largo"><span>Pix Copia e Cola fixo <em>(opcional — substitui o código gerado automaticamente)</em></span><textarea id="cPixCodigo" rows="2" maxlength="512"></textarea></label>
+          <label class="campo largo"><span>URL de imagem do QR Code <em>(opcional — substitui o QR gerado)</em></span><input id="cQrUrl" type="url" maxlength="500"></label>
+          <label class="checkbox largo"><input id="cArquivo" type="checkbox"> <span>Permitir anexar imagem/PDF do comprovante <em class="ajuda">(requer Cloud Storage configurado — veja o README)</em></span></label>
+          <p id="configErro" class="erro largo" role="alert" hidden></p>
+          <p id="configInfo" class="ajuda largo"></p>
+          <div class="largo"><button type="submit" id="btnSalvarConfig" class="botao botao-primario">Salvar configuração</button></div>
+        </form>
+      </details>
+    </div>
+  </main>
+
+  <!-- Confirmação de ação -->
+  <dialog id="dlgConfirmar" class="dialogo" aria-labelledby="confTitulo">
+    <form id="formConfirmar" method="dialog">
+      <div class="dialogo-topo">
+        <h2 id="confTitulo">Confirmar ação</h2>
+        <button type="button" class="fechar" data-fechar aria-label="Fechar">×</button>
+      </div>
+      <p id="confTexto"></p>
+      <label class="campo">
+        <span>Observação <em>(opcional, fica no histórico)</em></span>
+        <textarea id="confObs" rows="2" maxlength="400"></textarea>
+      </label>
+      <p id="confErro" class="erro" role="alert" hidden></p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end">
+        <button type="button" class="botao botao-secundario" data-fechar>Voltar</button>
+        <button type="submit" id="btnConfirmarAcao" class="botao botao-primario">Confirmar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Detalhes da reserva -->
+  <dialog id="dlgDetalhes" class="dialogo dialogo-largo" aria-labelledby="detTitulo">
+    <div class="dialogo-topo">
+      <h2 id="detTitulo">Reserva</h2>
+      <button type="button" class="fechar" data-fechar aria-label="Fechar">×</button>
+    </div>
+    <dl id="detDados" class="detalhes"></dl>
+    <div id="detAcoes" class="acoes" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px"></div>
+    <h3>Histórico</h3>
+    <ul id="detHistorico" class="historico"></ul>
+  </dialog>
+
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>

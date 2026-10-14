@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f6fed">
+  <title>Rifa Online</title>
+  <meta name="description" content="Escolha seu número, reserve e pague via Pix.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232f6fed'/%3E%3Ctext x='32' y='43' font-size='30' font-family='Arial' font-weight='700' fill='white' text-anchor='middle'%3E%23%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <div class="topo-conteudo">
+      <span class="marca"><span class="marca-icone" aria-hidden="true">#</span> Rifa Online</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <div id="aviso" class="aviso" role="alert" hidden></div>
+
+    <section class="cartao hero" aria-labelledby="titulo">
+      <h1 id="titulo">Carregando…</h1>
+      <p id="descricao" class="descricao"></p>
+      <div class="preco">
+        <span>Valor por número</span>
+        <strong id="valor">—</strong>
+      </div>
+      <p id="contato" class="ajuda" style="margin:12px 0 0" hidden></p>
+    </section>
+
+    <section id="minhas" class="cartao" hidden aria-labelledby="minhasTitulo">
+      <h2 id="minhasTitulo">Minhas reservas</h2>
+      <p class="ajuda">Reservas feitas neste aparelho/navegador.</p>
+      <ul id="listaMinhas" class="lista-minhas"></ul>
+    </section>
+
+    <section class="cartao" aria-labelledby="gradeTitulo">
+      <div class="cabecalho-secao">
+        <h2 id="gradeTitulo">Escolha seu número</h2>
+        <span id="resumoGrade" class="ajuda"></span>
+      </div>
+      <ul class="legenda" id="legenda" aria-label="Legenda"></ul>
+      <div id="grade" class="grade" aria-busy="true">
+        <p class="carregando">Carregando números…</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <a href="admin.html" class="link-discreto">Painel gerencial</a>
+  </footer>
+
+  <!-- Formulário de reserva -->
+  <dialog id="dlgReserva" class="dialogo" aria-labelledby="dlgReservaTitulo">
+    <form id="formReserva" method="dialog" novalidate>
+      <div class="dialogo-topo">
+        <h2 id="dlgReservaTitulo">Reservar número <span id="reservaNumeroTitulo"></span></h2>
+        <button type="button" class="fechar" data-fechar aria-label="Fechar">×</button>
+      </div>
+      <label class="campo">
+        <span>Número escolhido</span>
+        <input id="reservaNumero" type="text" readonly>
+      </label>
+      <label class="campo">
+        <span>Nome completo</span>
+        <input id="reservaNome" type="text" autocomplete="name" required minlength="3" maxlength="120" placeholder="Seu nome e sobrenome">
+      </label>
+      <label class="campo">
+        <span>Telefone / WhatsApp</span>
+        <input id="reservaTelefone" type="tel" inputmode="tel" autocomplete="tel" required placeholder="(11) 91234-5678">
+      </label>
+      <p class="ajuda">Seus dados ficam visíveis apenas para a equipe organizadora.</p>
+      <p id="reservaErro" class="erro" role="alert" hidden></p>
+      <button id="btnReservar" type="submit" class="botao botao-primario botao-grande">Reservar e pagar</button>
+    </form>
+  </dialog>
+
+  <!-- Pagamento Pix -->
+  <dialog id="dlgPagamento" class="dialogo" aria-labelledby="dlgPagamentoTitulo">
+    <div class="dialogo-topo">
+      <h2 id="dlgPagamentoTitulo">Pagamento via Pix</h2>
+      <button type="button" class="fechar" data-fechar aria-label="Fechar">×</button>
+    </div>
+
+    <div id="pagConteudo">
+      <dl class="resumo">
+        <div><dt>Número</dt><dd id="pagNumero" class="destaque"></dd></div>
+        <div><dt>Participante</dt><dd id="pagNome"></dd></div>
+        <div><dt>Valor a pagar</dt><dd id="pagValor" class="destaque"></dd></div>
+      </dl>
+      <p id="pagPrazo" class="prazo"></p>
+      <p id="pagInvalido" class="aviso aviso-erro" hidden>
+        A equipe não identificou o pagamento informado anteriormente. Confira os dados e envie novamente.
+      </p>
+
+      <div id="pixBloco" class="pix">
+        <div id="pixQr" class="pix-qr" hidden></div>
+        <div id="pixChaveBloco" class="campo-copiar" hidden>
+          <span class="rotulo">Chave Pix</span>
+          <div class="linha-copiar">
+            <code id="pixChave"></code>
+            <button type="button" class="botao botao-secundario" id="btnCopiarChave">Copiar chave</button>
+          </div>
+        </div>
+        <div id="pixCodigoBloco" class="campo-copiar" hidden>
+          <span class="rotulo">Pix Copia e Cola</span>
+          <textarea id="pixCodigo" readonly rows="3"></textarea>
+          <button type="button" class="botao botao-secundario" id="btnCopiarCodigo">Copiar código Pix</button>
+        </div>
+        <p id="pixSemDados" class="aviso" hidden>Os dados de pagamento ainda não foram configurados. Fale com a organização.</p>
+      </div>
+
+      <form id="formComprovante" novalidate>
+        <h3>Depois de pagar, informe o comprovante</h3>
+        <label class="campo">
+          <span>Identificador do comprovante <em>(obrigatório)</em></span>
+          <input id="compId" type="text" required minlength="3" maxlength="200" placeholder="Ex.: ID da transação ou código E2E">
+        </label>
+        <label class="campo">
+          <span>Referência ou código da transação <em>(se houver)</em></span>
+          <input id="compRef" type="text" maxlength="200" placeholder="Opcional">
+        </label>
+        <label class="campo" id="compArquivoCampo" hidden>
+          <span>Imagem ou PDF do comprovante <em>(opcional, até 5 MB)</em></span>
+          <input id="compArquivo" type="file" accept="image/*,application/pdf">
+        </label>
+        <p class="aviso aviso-info">
+          <strong>Importante:</strong> enviar estas informações <strong>não</strong> significa que o pagamento foi aprovado.
+          A equipe responsável fará a conferência manualmente.
+        </p>
+        <p id="compErro" class="erro" role="alert" hidden></p>
+        <button id="btnEnviarComp" type="submit" class="botao botao-primario botao-grande">Já realizei o pagamento</button>
+      </form>
+    </div>
+
+    <div id="pagEnviado" class="sucesso-bloco" hidden>
+      <div class="sucesso-icone" aria-hidden="true">🔎</div>
+      <h3>Pagamento em análise</h3>
+      <p>Recebemos as informações do seu pagamento. A equipe responsável vai conferir e confirmar o seu número.</p>
+      <p class="ajuda">Você pode acompanhar o status em “Minhas reservas”, nesta página.</p>
+      <button type="button" class="botao botao-primario botao-grande" data-fechar>Entendi</button>
+    </div>
+  </dialog>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js" defer></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
