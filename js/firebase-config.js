@@ -10,10 +10,10 @@
 // =============================================================================
 
 export const firebaseConfig = {
-  apiKey: "demo-chave",
-  authDomain: "demo-rifa.firebaseapp.com",
-  projectId: "demo-rifa",
-  storageBucket: "demo-rifa.appspot.com",
-  messagingSenderId: "000000000000",
-  appId: "1:000000000000:web:0000000000000000"
+  apiKey: "AIzaSyBh7uXH6ijSfZQVUTvO2RMImZtuObXn3Eo",
+  authDomain: "rifa-online-5f6bd.firebaseapp.com",
+  projectId: "rifa-online-5f6bd",
+  storageBucket: "rifa-online-5f6bd.firebasestorage.app",
+  messagingSenderId: "109850618563",
+  appId: "1:109850618563:web:7decfb35dec1a92140d076"
 };
