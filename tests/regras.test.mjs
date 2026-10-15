@@ -19,7 +19,7 @@ let env;
 const CONFIG = {
   titulo: "Rifa de teste", descricao: "", valor: 10, numeroInicial: 0, numeroFinal: 100,
   reservaMinutos: 30, pixChave: "pix@exemplo.com", pixNome: "Fulano", pixCidade: "Sao Paulo",
-  pixCopiaECola: "", qrCodeUrl: "", permitirArquivo: true, contato: "", dataSorteio: "30/11/26",
+  pixCopiaECola: "", qrCodeUrl: "", permitirArquivo: true, contato: "", dataSorteio: "30/11/26", mostrarQrCode: false,
   atualizadoEm: Timestamp.now(), atualizadoPor: "admin@rifa.test"
 };
 

@@ -114,7 +114,7 @@
           <label class="campo"><span>Prazo da reserva (minutos)</span><input id="cMinutos" type="number" min="1" max="10080" required></label>
           <label class="campo"><span>Primeiro número</span><input id="cInicial" type="number" min="0" max="9999" required></label>
           <label class="campo"><span>Último número</span><input id="cFinal" type="number" min="0" max="9999" required></label>
-          <label class="campo"><span>Chave Pix</span><input id="cPixChave" type="text" maxlength="77" placeholder="E-mail, CPF/CNPJ, +55DDDNÚMERO ou chave aleatória"></label>
+          <label class="campo"><span>Chave Pix</span><input id="cPixChave" type="text" maxlength="77" placeholder="Celular, e-mail, CPF/CNPJ ou chave aleatória" aria-describedby="cPixTipo"><small id="cPixTipo" class="ajuda"></small></label>
           <label class="campo"><span>WhatsApp/contato da organização <em>(opcional)</em></span><input id="cContato" type="text" maxlength="60"></label>
           <label class="campo"><span>Data do sorteio <em>(opcional — ex.: 30/11/26; vazio esconde)</em></span><input id="cDataSorteio" type="text" maxlength="40" placeholder="30/11/26"></label>
           <span class="campo" aria-hidden="true"></span>
@@ -122,6 +122,7 @@
           <label class="campo"><span>Cidade do recebedor <em>(para gerar o QR Code)</em></span><input id="cPixCidade" type="text" maxlength="15"></label>
           <label class="campo largo"><span>Pix Copia e Cola fixo <em>(opcional — substitui o código gerado automaticamente)</em></span><textarea id="cPixCodigo" rows="2" maxlength="512"></textarea></label>
           <label class="campo largo"><span>URL de imagem do QR Code <em>(opcional — substitui o QR gerado)</em></span><input id="cQrUrl" type="url" maxlength="500"></label>
+          <label class="checkbox largo"><input id="cMostrarQr" type="checkbox"> <span>Mostrar QR Code e Pix Copia e Cola para o participante <em class="ajuda">(desmarcado: aparece só a chave Pix com o botão de copiar)</em></span></label>
           <label class="checkbox largo"><input id="cArquivo" type="checkbox"> <span>Permitir anexar imagem/PDF do comprovante <em class="ajuda">(requer Cloud Storage configurado — veja o README)</em></span></label>
           <p id="configErro" class="erro largo" role="alert" hidden></p>
           <p id="configInfo" class="ajuda largo"></p>

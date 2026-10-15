@@ -25,12 +25,43 @@ function semAcentos(texto, max) {
     .toUpperCase().trim().slice(0, max);
 }
 
+function cpfValido(d) {
+  if (!/^\d{11}$/.test(d) || /^(\d)\1{10}$/.test(d)) return false;
+  for (const t of [9, 10]) {
+    let soma = 0;
+    for (let i = 0; i < t; i++) soma += Number(d[i]) * (t + 1 - i);
+    const dv = (soma * 10) % 11 % 10;
+    if (dv !== Number(d[t])) return false;
+  }
+  return true;
+}
+
+/**
+ * Converte a chave digitada para o formato exigido no BR Code e informa o tipo.
+ * Celular precisa ir como +55DDDNÚMERO; CPF/CNPJ só com dígitos.
+ * @returns {{chave:string, tipo:string}}
+ */
+export function normalizarChavePix(chaveDigitada) {
+  const bruta = String(chaveDigitada || "").trim();
+  if (!bruta) return { chave: "", tipo: "" };
+  if (bruta.includes("@")) return { chave: bruta.toLowerCase(), tipo: "E-mail" };
+  if (/^[\d\s().+\-/]+$/.test(bruta)) {
+    const d = bruta.replace(/\D/g, "");
+    if (bruta.startsWith("+")) return { chave: "+" + d, tipo: "Celular" };
+    if (d.length === 11 && cpfValido(d)) return { chave: d, tipo: "CPF" };
+    if (d.length === 14) return { chave: d, tipo: "CNPJ" };
+    if (d.length === 10 || d.length === 11) return { chave: "+55" + d, tipo: "Celular" };
+    if ((d.length === 12 || d.length === 13) && d.startsWith("55")) return { chave: "+" + d, tipo: "Celular" };
+  }
+  return { chave: bruta.toLowerCase(), tipo: "Chave aleatória" };
+}
+
 /**
  * Monta o código Pix copia e cola.
  * @param {{chave:string, nome:string, cidade:string, valor?:number, txid?:string}} dados
  */
 export function gerarPixCopiaECola({ chave, nome, cidade, valor, txid }) {
-  const conta = campo("00", "br.gov.bcb.pix") + campo("01", String(chave).trim());
+  const conta = campo("00", "br.gov.bcb.pix") + campo("01", normalizarChavePix(chave).chave);
   const id = String(txid || "").replace(/[^A-Za-z0-9]/g, "").slice(0, 25) || "***";
 
   let payload = campo("00", "01")

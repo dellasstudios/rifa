@@ -13,6 +13,7 @@ import {
   STATUS_RESERVA, statusPublico, expiraEm, faixaNumeros, formatarNumero, formatarMoeda,
   formatarDataHora, escapeHtml, toast, mensagemErro, linkWhatsApp, emMs
 } from "./common.js";
+import { normalizarChavePix } from "./pix.js";
 
 const $ = (id) => document.getElementById(id);
 
@@ -538,6 +539,7 @@ function preencherConfig() {
       $("cMinutos").value = 30;
       $("cInicial").value = 0;
       $("cFinal").value = 100;
+      $("cMostrarQr").checked = true;
       configCarregada = true;
     }
     return;
@@ -558,9 +560,18 @@ function preencherConfig() {
   $("cQrUrl").value = c.qrCodeUrl || "";
   $("cContato").value = c.contato || "";
   $("cDataSorteio").value = c.dataSorteio || "";
+  $("cMostrarQr").checked = c.mostrarQrCode !== false;
+  mostrarTipoChave();
   $("cArquivo").checked = Boolean(c.permitirArquivo);
   configCarregada = true;
 }
+
+/** Mostra como a chave será usada no QR Code (ex.: celular vira +55...). */
+function mostrarTipoChave() {
+  const { chave, tipo } = normalizarChavePix($("cPixChave").value);
+  $("cPixTipo").textContent = tipo ? `Reconhecida como ${tipo}${tipo === "Celular" ? ` (${chave})` : ""}.` : "";
+}
+$("cPixChave").addEventListener("input", mostrarTipoChave);
 
 $("formConfig").addEventListener("submit", async (e) => {
   e.preventDefault();
@@ -601,6 +612,7 @@ $("formConfig").addEventListener("submit", async (e) => {
       qrCodeUrl: $("cQrUrl").value.trim(),
       contato: $("cContato").value.trim(),
       dataSorteio: $("cDataSorteio").value.trim(),
+      mostrarQrCode: $("cMostrarQr").checked,
       permitirArquivo: $("cArquivo").checked,
       atualizadoEm: serverTimestamp(),
       atualizadoPor: estado.usuario.email

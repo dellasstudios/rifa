@@ -357,7 +357,8 @@ function abrirPagamento(reserva) {
   $("compArquivoCampo").hidden = !c.permitirArquivo;
 
   // Dados Pix
-  const codigoPix = c.pixCopiaECola
+  const mostrarQr = c.mostrarQrCode !== false;
+  const codigoPix = !mostrarQr ? "" : c.pixCopiaECola
     || (c.pixChave && c.pixNome && c.pixCidade
       ? gerarPixCopiaECola({ chave: c.pixChave, nome: c.pixNome, cidade: c.pixCidade, valor: reserva.valor, txid: `RIFA${reserva.numero}` })
       : "");
@@ -366,7 +367,7 @@ function abrirPagamento(reserva) {
   $("pixCodigoBloco").hidden = !codigoPix;
   $("pixCodigo").value = codigoPix;
   $("pixSemDados").hidden = Boolean(c.pixChave || codigoPix);
-  renderQr(c.qrCodeUrl, codigoPix);
+  renderQr(mostrarQr ? c.qrCodeUrl : "", codigoPix);
 
   atualizarPrazo();
   if (!$("dlgPagamento").open) $("dlgPagamento").showModal();
